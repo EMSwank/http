@@ -51,7 +51,9 @@ class Server
 
   def hello_world
     @hello_counter += 1
-    "Hello, world! (#{@hello_counter})"
+    if @path == "/hello"
+      "Hello, world! (#{@hello_counter})"
+    end
   end
 
   def close_connection
@@ -62,6 +64,12 @@ class Server
 
   def parse
     @verb = @request_lines[0].split(" ")[0]
-
+    @path = @request_lines[0].split(" ")[1]
+    @protocol = @request_lines[0].split(" ")[2]
+    @host = @request_lines[1].split(" ")[1].split(":")[0]
+    @port = @request_lines[1].split(" ")[1].split(":")[1]
+    @origin = @host
+    @accept = @request_lines[8]
   end
+
 end
