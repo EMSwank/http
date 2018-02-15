@@ -1,7 +1,8 @@
 require 'socket'
+require 'pry'
 
 class Server
-  attr_reader :path, :header, :body, :response
+  attr_reader :path, :header
 
   def initialize
     @tcp_server = TCPServer.new(9292)
@@ -33,8 +34,15 @@ class Server
 
   def response
     puts "Sending response."
+    parse
+    response = "<pre>" + "#{supporting_paths}" + ("\n") + "</pre>"
     puts @request_lines
-    # output = "<html><head></head><body>#{response}</body></html>"
+    output = "<html><head></head><body>#{response}</body></html>"
+    headers = ["http/1.1 200 ok",
+              "date: #{date_time}",
+              "server: ruby",
+              "content-type: text/html; charset=iso-8859-1",
+              "content-length: #{output.length}\r\n\r\n"].join("\r\n")
     @client.puts headers
     @client.puts output
   end
@@ -47,24 +55,21 @@ class Server
               "content-length: #{output.length}\r\n\r\n"].join("\r\n")
   end
 
-  def response_body(response)
-    @body = "<html><head></head><body><pre>#{response}</pre></body></html>"
-  end
-
   def date_time
-    @counter += 1
+    # @counter += 1
     "#{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}"
   end
 
   def hello_world
     @hello_counter += 1
     @counter += 1
+    # binding.pry
     "Hello, world! (#{@hello_counter})"
   end
 
   def shutdown
     @counter += 1
-    "Total requests: #{@counter}"
+    return "Total requests: #{@counter}"
   end
 
   def close_connection
@@ -81,10 +86,14 @@ class Server
     @port = @request_lines[1].split(" ")[1].split(":")[1]
     @origin = @host
     @accept = @request_lines[8]
+
   end
 
   def supporting_paths
-    if @path == "/hello"
+    # binding.pry
+    if @path == '/'
+      parse
+    elsif @path == "/hello"
       hello_world
     elsif @path == "/datetime"
       date_time
