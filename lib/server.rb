@@ -5,6 +5,7 @@ class Server
   def initialize
     @tcp_server = TCPServer.new(9292)
     @hello_counter = 0
+    @counter = 0
     @request_lines = []
   end
 
@@ -31,10 +32,8 @@ class Server
 
   def response
     puts "Sending response."
-    @hello_counter += 1
-    response = "<pre>" + "Hello world (#{@hello_counter})" + ("\n") + "</pre>"
+    response = "<pre>" + "#{supporting_paths}" + ("\n") + "</pre>"
     puts @request_lines
-# @request_lines.join
     output = "<html><head></head><body>#{response}</body></html>"
     headers = ["http/1.1 200 ok",
               "date: #{date_time}",
@@ -46,14 +45,20 @@ class Server
   end
 
   def date_time
+    @counter += 1
     "#{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}"
   end
 
   def hello_world
     @hello_counter += 1
-    if @path == "/hello"
-      "Hello, world! (#{@hello_counter})"
+    @counter += 1
+    "Hello, world! (#{@hello_counter})"
     end
+  end
+
+  def shutdown
+    @counter += 1
+    "Total requests: #{@counter}"
   end
 
   def close_connection
@@ -72,4 +77,9 @@ class Server
     @accept = @request_lines[8]
   end
 
+  def supporting_paths
+    hello_world if @path == "/hello"
+    date_time if @path == "/datetime"
+    shutdown if @path == "/shutdown"
+  end
 end
