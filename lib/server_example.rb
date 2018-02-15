@@ -26,3 +26,14 @@ client.puts output
 puts ["Wrote this response:", headers, output].join("\n")
 client.close
 puts "\nResponse complete, exiting."
+
+
+"GET / HTTP/1.1",
+"Host: 127.0.0.1:9292",
+"Connection: keep-alive",
+"Cache-Control: no-cache",
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36
+Postman-Token: e866cffb-2853-39b1-7383-1f185bbecef4
+Accept: */*
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9"
