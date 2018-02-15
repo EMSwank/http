@@ -1,6 +1,7 @@
 require 'socket'
 
 class Server
+  attr_reader :path, :header, :body, :response
 
   def initialize
     @tcp_server = TCPServer.new(9292)
@@ -32,17 +33,22 @@ class Server
 
   def response
     puts "Sending response."
-    parse
-    response = "<pre>" + "#{supporting_paths}" + ("\n") + "</pre>"
     puts @request_lines
-    output = "<html><head></head><body>#{response}</body></html>"
-    headers = ["http/1.1 200 ok",
+    # output = "<html><head></head><body>#{response}</body></html>"
+    @client.puts headers
+    @client.puts output
+  end
+
+  def response_header
+    @header = ["http/1.1 200 ok",
               "date: #{date_time}",
               "server: ruby",
               "content-type: text/html; charset=iso-8859-1",
               "content-length: #{output.length}\r\n\r\n"].join("\r\n")
-    @client.puts headers
-    @client.puts output
+  end
+
+  def response_body(response)
+    @body = "<html><head></head><body><pre>#{response}</pre></body></html>"
   end
 
   def date_time
