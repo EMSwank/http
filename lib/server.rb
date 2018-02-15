@@ -20,8 +20,8 @@ class Server
       while line = @client.gets and !line.chomp.empty?
         @request_lines << line.chomp
       end
-      require 'pry'; binding.pry
       response
+      # require 'pry'; binding.pry
     end
   end
 
@@ -32,6 +32,7 @@ class Server
 
   def response
     puts "Sending response."
+    parse
     response = "<pre>" + "#{supporting_paths}" + ("\n") + "</pre>"
     puts @request_lines
     output = "<html><head></head><body>#{response}</body></html>"
@@ -53,7 +54,6 @@ class Server
     @hello_counter += 1
     @counter += 1
     "Hello, world! (#{@hello_counter})"
-    end
   end
 
   def shutdown
@@ -78,8 +78,14 @@ class Server
   end
 
   def supporting_paths
-    hello_world if @path == "/hello"
-    date_time if @path == "/datetime"
-    shutdown if @path == "/shutdown"
+    if @path == "/hello"
+      hello_world
+    elsif @path == "/datetime"
+      date_time
+    else @path == "/shutdown"
+      shutdown
+    # else
+    #   response
+    end
   end
 end
