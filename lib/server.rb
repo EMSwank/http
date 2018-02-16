@@ -109,6 +109,8 @@ class Server
       date_time
     elsif @path.include?("/word_search") && @verb == "GET"
         word_lookup
+    elsif @path == '/game' && @verb = 'POST'
+      binding.pry
     else @path == "/shutdown"
       shutdown
     # else
