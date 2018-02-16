@@ -35,7 +35,7 @@ class Server
     puts "Sending response."
     parse
     response = "<pre>" + "#{supporting_paths}" + ("\n") + "</pre>"
-    puts @request_lines
+    # puts @request_lines
     output = "<html><head></head><body>#{response}</body></html>"
     headers = ["http/1.1 200 ok",
               "date: #{date_time}",
@@ -44,10 +44,6 @@ class Server
               "content-length: #{output.length}\r\n\r\n"].join("\r\n")
     @client.puts headers
     @client.puts output
-  end
-
-  def headers
-
   end
 
   def response_header
@@ -59,13 +55,14 @@ class Server
   end
 
   def date_time
+    # @counter += 1
     "#{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}"
   end
 
   def hello_world
     @hello_counter += 1
     @counter += 1
-    "Hello, world! (#{@hello_counter})"
+    return "Hello, world! (#{@hello_counter})"
   end
 
   def shutdown
@@ -75,6 +72,7 @@ class Server
 
   def close_connection
     puts ["Wrote this response:", headers, output].join("\n")
+    # @client.close
     puts "\nResponse complete, exiting."
   end
 
@@ -101,7 +99,7 @@ class Server
 
   def supporting_paths
     if @path == '/'
-      response_header
+      parse
     elsif @path == "/hello"
       hello_world
     elsif @path == "/datetime"
