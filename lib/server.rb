@@ -86,7 +86,17 @@ class Server
     @port = @request_lines[1].split(" ")[1].split(":")[1]
     @origin = @host
     @accept = @request_lines[8]
+  end
 
+  def word_lookup
+    word_to_lookup = @request_lines.find {|request| request.include?('?')}
+    actual = word_to_lookup.split("=")[1].split[0]
+    dict = File.read("/usr/share/dict/words")
+    if dict.include?(actual)
+      return "#{actual} is a known word"
+    else
+      return "#{actual} is not a known word"
+    end
   end
 
   def supporting_paths
@@ -97,6 +107,8 @@ class Server
       hello_world
     elsif @path == "/datetime"
       date_time
+    elsif @path.include?("/word_search") && @verb == "GET"
+        word_lookup
     else @path == "/shutdown"
       shutdown
     # else
