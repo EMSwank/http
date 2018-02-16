@@ -23,7 +23,6 @@ class Server
         @request_lines << line.chomp
       end
       response
-      # require 'pry'; binding.pry
     end
   end
 
@@ -47,6 +46,10 @@ class Server
     @client.puts output
   end
 
+  def headers
+
+  end
+
   def response_header
     @header = ["http/1.1 200 ok",
               "date: #{date_time}",
@@ -56,14 +59,12 @@ class Server
   end
 
   def date_time
-    # @counter += 1
     "#{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}"
   end
 
   def hello_world
     @hello_counter += 1
     @counter += 1
-    # binding.pry
     "Hello, world! (#{@hello_counter})"
   end
 
@@ -74,7 +75,6 @@ class Server
 
   def close_connection
     puts ["Wrote this response:", headers, output].join("\n")
-    # @client.close
     puts "\nResponse complete, exiting."
   end
 
@@ -100,21 +100,17 @@ class Server
   end
 
   def supporting_paths
-    # binding.pry
     if @path == '/'
-      parse
+      response_header
     elsif @path == "/hello"
       hello_world
     elsif @path == "/datetime"
       date_time
     elsif @path.include?("/word_search") && @verb == "GET"
         word_lookup
-    elsif @path == '/game' && @verb = 'POST'
-      binding.pry
+    elsif @path == '/game' && @verb == 'POST'
     else @path == "/shutdown"
       shutdown
-    # else
-    #   response
     end
   end
 end
